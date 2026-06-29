@@ -1,0 +1,29 @@
+# Uploads et fichiers étudiants
+uploads/
+sessions/
+
+# Environnement local
+.env
+*.local.php
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+error_log
+
+# PHPMailer (déjà dans le repo, mais on ignore les archives)
+espace_administrateur/PHPMailer/*.tar.gz
+
+# Fichiers temporaires
+backup.sql
+*.bak

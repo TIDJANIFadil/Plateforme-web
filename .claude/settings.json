@@ -1,0 +1,37 @@
+{
+  "model": "anthropic/opencode/deepseek-v4-flash-free",
+  "plugins": {
+    "frontend-design": {
+      "enabled": true,
+      "source": "official",
+      "description": "Official Anthropic plugin for frontend UI/design guidance"
+    },
+    "code-review": {
+      "enabled": true,
+      "source": "official",
+      "description": "Official Anthropic plugin for multi-agent code review"
+    },
+    "security-guidance": {
+      "enabled": true,
+      "source": "official",
+      "description": "Official Anthropic plugin for security scanning and guidance"
+    }
+  },
+  "skills": {
+    "superpowers": {
+      "enabled": true,
+      "path": "plugins/superpowers",
+      "description": "Planning, testing, and review workflow (github.com/obra/superpowers)"
+    },
+    "claude-mem": {
+      "enabled": true,
+      "path": "plugins/claude-mem",
+      "description": "Cross-session memory (github.com/thedotmack/claude-mem)"
+    },
+    "gstack": {
+      "enabled": true,
+      "path": "plugins/gstack",
+      "description": "Full dev workflow by Garry Tan (github.com/garrytan/gstack)"
+    }
+  }
+}

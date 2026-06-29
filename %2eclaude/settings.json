@@ -1,0 +1,11 @@
+{
+  "model": "anthropic/opencode/deepseek-v4-flash-free",
+  "skills": {
+    "superpowers": { "enabled": true, "path": ".claude/plugins/superpowers" },
+    "frontend-design": { "enabled": true },
+    "code-review": { "enabled": true },
+    "security-guidance": { "enabled": true },
+    "claude-mem": { "enabled": true, "path": ".claude/plugins/claude-mem" },
+    "gstack": { "enabled": true, "path": ".claude/plugins/gstack" }
+  }
+}

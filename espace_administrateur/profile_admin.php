@@ -141,7 +141,7 @@ try {
     <style data-purpose="global-styles">
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background: #f0f4f8;
             color: #1e293b;
         }
         .active-nav {
@@ -222,9 +222,9 @@ try {
                 <?php endif; ?>
             </a>
                 
-            <button class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full">
+            <a href="faq_admin.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                 <span class="material-symbols-outlined" data-icon="help">help</span>
-            </button> 
+            </a> 
 
             <a href="profile_admin.php" class="flex items-center space-x-3">
                 <span class="text-sm font-semibold text-slate-700"><?= $admin_nom; ?></span>

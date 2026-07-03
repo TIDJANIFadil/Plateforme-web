@@ -319,9 +319,9 @@ $pieces_map = [
                     <?php endif; ?>
                 </a>
 
-                <button class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full">
+                <a href="faq.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                     <span class="material-symbols-outlined" data-icon="help">help</span>
-                </button>
+                </a>
 
                 <a href="profile.php" class="flex items-center gap-sm">
                     <span class="text-primary font-bold text-sm hidden md:inline-block"><?php echo htmlspecialchars($nom_complet); ?></span>

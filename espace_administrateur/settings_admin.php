@@ -194,7 +194,7 @@ $count_total = count($types_documents);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; color: #1e293b; }
         .active-nav { background-color: #93F08D; color: #065f46; }
         .ifri-blue { color: #003d7a; }
         .ifri-bg-blue { background-color: #003d7a; }
@@ -272,9 +272,9 @@ $count_total = count($types_documents);
                     <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
                 <?php endif; ?>
             </a>
-            <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors">
+            <a href="faq_admin.php" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors inline-flex items-center justify-center">
                 <span class="material-symbols-outlined">help</span>
-            </button>
+            </a>
             <a href="profile_admin.php" class="flex items-center space-x-3">
                 <span class="text-sm font-semibold text-slate-700"><?= $admin_nom; ?></span>
                 <?php if ($admin_avatar): ?>

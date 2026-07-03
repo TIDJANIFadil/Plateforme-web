@@ -60,6 +60,7 @@ $demandes = $pdo->query($query)->fetchAll();
     <style data-purpose="typography">
         body {
             font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
         }
         .modal-backdrop {
             backdrop-filter: blur(8px);
@@ -90,7 +91,7 @@ $demandes = $pdo->query($query)->fetchAll();
         .bell-ring { animation: bell-ring 0.5s ease-in-out infinite; }
     </style>
 </head>
-<body class="bg-main-content text-slate-800 antialiased min-h-screen flex">
+<body class="text-slate-800 antialiased min-h-screen flex">
 
 <aside class="w-64 bg-sidebar border-r border-slate-200 flex flex-col h-screen sticky top-0" data-purpose="sidebar">
     <div class="p-6">
@@ -133,7 +134,7 @@ $demandes = $pdo->query($query)->fetchAll();
         </a>
     </div>
 </aside>
-<main class="flex-1 flex flex-col min-w-0 bg-white" data-purpose="main-content">
+<main class="flex-1 flex flex-col min-w-0" data-purpose="main-content">
     <header class="h-16 border-b border-slate-200 flex items-center justify-between px-8 bg-white z-10">
         <div class="relative w-96">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -151,9 +152,9 @@ $demandes = $pdo->query($query)->fetchAll();
                 <?php endif; ?>
             </a>
 
-            <button class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full">
+            <a href="faq_admin.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                 <span class="material-symbols-outlined" data-icon="help">help</span>
-            </button>
+            </a>
             <a href="profile_admin.php" class="flex items-center space-x-3">
                 <span class="text-sm font-semibold text-slate-700"><?= $admin_nom_header; ?></span>
                 <?php if ($admin_avatar): ?>

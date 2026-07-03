@@ -35,6 +35,7 @@ function genererCodeSecret(int $longueur = 8): string {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
     $nouveau_statut = trim($_POST['statut_demande']);
     $motif_rejet = isset($_POST['motif_rejet']) ? trim($_POST['motif_rejet']) : null;
+    $motif_admin = isset($_POST['motif_admin']) ? trim($_POST['motif_admin']) : null;
 
     if (in_array($nouveau_statut, ['En attente', 'En cours', 'Prêt', 'Terminée', 'Rejeté'])) {
         try {
@@ -81,12 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
                     }
 
                     // Mise à jour de la demande
-                    $sql = "UPDATE demandes SET statut_demande = :statut, document_pdf = :pdf, code_secret = :code WHERE id_demande = :id";
+                    $sql = "UPDATE demandes SET statut_demande = :statut, document_pdf = :pdf, code_secret = :code, commentaire_admin = :motif WHERE id_demande = :id";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute([
                         'statut' => $nouveau_statut,
                         'pdf' => $pdf_path,
                         'code' => $code_secret,
+                        'motif' => $motif_admin,
                         'id' => $id_demande
                     ]);
 
@@ -171,8 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
                     }
                 }
             } elseif ($nouveau_statut === 'En cours') {
-                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut WHERE id_demande = :id");
-                $stmt->execute(['statut' => $nouveau_statut, 'id' => $id_demande]);
+                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut, commentaire_admin = :motif WHERE id_demande = :id");
+                $stmt->execute(['statut' => $nouveau_statut, 'motif' => $motif_admin, 'id' => $id_demande]);
                 $message_success = "La demande a été mise en cours de traitement.";
 
                 // Notification à l'étudiant
@@ -180,16 +182,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
                 $info->execute([$id_demande]);
                 $etudiant = $info->fetch();
                 if ($etudiant) {
+                    $raison = !empty($motif_admin) ? " Motif : " . $motif_admin : "";
                     $stmt_n = $pdo->prepare("INSERT INTO notifications (titre, message, niveau, id_etudiant, cree_at) VALUES (?, ?, 'info', ?, NOW())");
-                    $stmt_n->execute(["⏳ " . $etudiant['libelle'] . " en traitement", "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " est en cours de traitement.", $etudiant['id_etudiant']]);
+                    $stmt_n->execute(["⏳ " . $etudiant['libelle'] . " en traitement", "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " est en cours de traitement." . $raison, $etudiant['id_etudiant']]);
 
                     // Notification admin
                     $stmt_admin_notif = $pdo->prepare("INSERT INTO admin_notifications (titre, message, type_notif, id_etudiant, id_demande, cree_at) VALUES (?, ?, 'statut', ?, ?, NOW())");
-                    $stmt_admin_notif->execute(["⏳ Demande #" . $id_demande . " en cours", $etudiant['prenom'] . " " . $etudiant['nom'] . " — " . $etudiant['libelle'] . " est en cours de traitement.", $etudiant['id_etudiant'], $id_demande]);
+                    $stmt_admin_notif->execute(["⏳ Demande #" . $id_demande . " en cours", $etudiant['prenom'] . " " . $etudiant['nom'] . " — " . $etudiant['libelle'] . " est en cours de traitement." . (!empty($motif_admin) ? " Motif : " . $motif_admin : ""), $etudiant['id_etudiant'], $id_demande]);
                 }
             } elseif ($nouveau_statut === 'En attente') {
-                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut WHERE id_demande = :id");
-                $stmt->execute(['statut' => $nouveau_statut, 'id' => $id_demande]);
+                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut, commentaire_admin = :motif WHERE id_demande = :id");
+                $stmt->execute(['statut' => $nouveau_statut, 'motif' => $motif_admin, 'id' => $id_demande]);
                 $message_success = "La demande est repassée en attente.";
 
                 // Notification étudiant
@@ -197,16 +200,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
                 $info->execute([$id_demande]);
                 $etudiant = $info->fetch();
                 if ($etudiant) {
+                    $raison = !empty($motif_admin) ? " Motif : " . $motif_admin : "";
                     $stmt_n = $pdo->prepare("INSERT INTO notifications (titre, message, niveau, id_etudiant, cree_at) VALUES (?, ?, 'info', ?, NOW())");
-                    $stmt_n->execute(["🔄 " . $etudiant['libelle'] . " remise en attente", "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " a été remise en file d'attente pour révision.", $etudiant['id_etudiant']]);
+                    $stmt_n->execute(["🔄 " . $etudiant['libelle'] . " remise en attente", "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " a été remise en file d'attente pour révision." . $raison, $etudiant['id_etudiant']]);
 
                     // Notification admin
                     $stmt_admin_notif = $pdo->prepare("INSERT INTO admin_notifications (titre, message, type_notif, id_etudiant, id_demande, cree_at) VALUES (?, ?, 'statut', ?, ?, NOW())");
-                    $stmt_admin_notif->execute(["🔄 Demande #" . $id_demande . " en attente", $etudiant['prenom'] . " " . $etudiant['nom'] . " — " . $etudiant['libelle'] . " a été remise en file d'attente.", $etudiant['id_etudiant'], $id_demande]);
+                    $stmt_admin_notif->execute(["🔄 Demande #" . $id_demande . " en attente", $etudiant['prenom'] . " " . $etudiant['nom'] . " — " . $etudiant['libelle'] . " a été remise en file d'attente." . (!empty($motif_admin) ? " Motif : " . $motif_admin : ""), $etudiant['id_etudiant'], $id_demande]);
                 }
             } elseif ($nouveau_statut === 'Rejeté') {
-                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut, motif_rejet = :motif WHERE id_demande = :id");
-                $stmt->execute(['statut' => $nouveau_statut, 'motif' => $motif_rejet, 'id' => $id_demande]);
+                $stmt = $pdo->prepare("UPDATE demandes SET statut_demande = :statut, motif_rejet = :motif, commentaire_admin = :cmt WHERE id_demande = :id");
+                $stmt->execute(['statut' => $nouveau_statut, 'motif' => $motif_rejet, 'cmt' => $motif_admin, 'id' => $id_demande]);
                 $message_success = "La demande a été rejetée.";
 
                 // Notification à l'étudiant avec le motif
@@ -692,6 +696,16 @@ if (isset($_SESSION['admin_email'])) {
                         </div>
                     </div>
 
+                    <!-- Commentaire admin -->
+                    <?php if (!empty($demande['commentaire_admin'])): ?>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Commentaire de l'administration</p>
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-slate-700 text-sm leading-relaxed">
+                                <?= htmlspecialchars($demande['commentaire_admin']); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
                     <!-- Document déjà uploadé -->
                     <?php if ($current_pdf && file_exists(__DIR__ . '/../' . $current_pdf)): ?>
                         <div class="mt-5 pt-4 border-t border-slate-100">
@@ -915,7 +929,15 @@ if (isset($_SESSION['admin_email'])) {
                             <p class="text-[11px] text-slate-400 mt-1">PDF uniquement, max 20 Mo</p>
                         </div>
 
-                        <!-- Motif de rejet -->
+                        <!-- Motif / Commentaire (visible pour tous les statuts) -->
+                        <div id="motif_section">
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider" id="motif_label">Motif / Commentaire</label>
+                            <textarea name="motif_admin" rows="3" id="motif_textarea"
+                                class="w-full p-3 rounded-xl border border-slate-200 focus:border-[#004A99] focus:ring-1 focus:ring-[#004A99] text-sm bg-white resize-none"
+                                placeholder="Ajoutez un commentaire ou un motif..."><?= htmlspecialchars($demande['commentaire_admin'] ?? ''); ?></textarea>
+                        </div>
+
+                        <!-- Motif de rejet (supplémentaire) -->
                         <div id="rejet_section" class="hidden">
                             <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Motif du rejet</label>
                             <textarea name="motif_rejet" rows="3"
@@ -959,6 +981,21 @@ if (isset($_SESSION['admin_email'])) {
     <script>
         function toggleRejet(val) {
             document.getElementById('rejet_section').classList.toggle('hidden', val !== 'Rejeté');
+            var label = document.getElementById('motif_label');
+            var textarea = document.getElementById('motif_textarea');
+            if (val === 'Rejeté') {
+                label.textContent = 'Commentaire supplémentaire';
+                textarea.placeholder = 'Ajoutez un commentaire si nécessaire...';
+            } else if (val === 'En cours') {
+                label.textContent = 'Motif de mise en cours';
+                textarea.placeholder = 'Ex: Demande prise en charge, vérification en cours...';
+            } else if (val === 'En attente') {
+                label.textContent = 'Motif de mise en attente';
+                textarea.placeholder = 'Ex: En attente de documents complémentaires...';
+            } else if (val === 'Prêt') {
+                label.textContent = 'Commentaire (optionnel)';
+                textarea.placeholder = 'Ajoutez un commentaire si nécessaire...';
+            }
         }
 
         function toggleUpload(val) {

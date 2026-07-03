@@ -169,7 +169,7 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <style data-purpose="typography">
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; }
     </style>
     <style data-purpose="custom-colors">
         .bg-sidebar { background-color: #F8FAFC; }
@@ -196,7 +196,7 @@ try {
         .bell-ring { animation: bell-ring 0.5s ease-in-out infinite; }
     </style>
 </head>
-<body class="bg-main-content text-slate-800 antialiased min-h-screen flex">
+<body class="text-slate-800 antialiased min-h-screen flex">
 
     <aside class="w-64 bg-sidebar border-r border-slate-200 flex flex-col h-screen sticky top-0" data-purpose="sidebar">
         <div class="p-6">
@@ -234,7 +234,7 @@ try {
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col min-w-0 bg-white" data-purpose="main-content">
+    <main class="flex-1 flex flex-col min-w-0" data-purpose="main-content">
         <header class="h-16 border-b border-slate-200 flex items-center justify-between px-8 bg-white z-10">
             <div class="relative w-96">
                 <form method="GET" action="mes_demandes_admin.php">
@@ -254,9 +254,9 @@ try {
                 <?php endif; ?>
             </a>
 
-            <button class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full">
+            <a href="faq_admin.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                 <span class="material-symbols-outlined" data-icon="help">help</span>
-            </button>     
+            </a>     
             <a class="flex items-center space-x-3" href="profile_admin.php">
                 <span class="text-sm font-semibold text-slate-700"><?= $admin_nom_header; ?></span>
                 <?php if ($admin_avatar): ?>

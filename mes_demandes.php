@@ -255,9 +255,9 @@ $pieces_map = [
                     <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
                 <?php endif; ?>
             </a>
-            <button class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full">
+            <a href="faq.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                     <span class="material-symbols-outlined" data-icon="help">help</span>
-                </button>
+                </a>
             <a href="profile.php" class="flex items-center gap-3">
                 <span class="text-sm font-semibold text-ifri-blue"><?= htmlspecialchars($nom_complet) ?></span>
                 <?php if (!empty($photo_path) && is_file(__DIR__ . '/' . $photo_path)): ?>

@@ -297,7 +297,7 @@ try {
         .ifri-blue { color: #003d7a; }
     </style>
 </head>
-<body class="flex min-h-screen overflow-hidden">
+<body class="flex min-h-screen overflow-hidden antialiased text-slate-800">
 
     <!-- ===== TOAST ===== -->
     <div id="toast" class="toast-msg">
@@ -360,9 +360,9 @@ try {
                             <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($total_non_lues_global, 99); ?></span>
                         <?php endif; ?>
                     </div>
-                    <button class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors">
+                    <a href="faq_admin.php" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors inline-flex items-center justify-center">
                         <span class="material-symbols-outlined">help</span>
-                    </button>
+                    </a>
                     <div class="flex items-center gap-2.5 pl-3 border-l border-slate-200">
                         <span class="text-sm font-semibold text-slate-700 hidden sm:block"><?= htmlspecialchars($admin_nom_header); ?></span>
                         <?php if ($admin_avatar): ?>

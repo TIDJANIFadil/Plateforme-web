@@ -315,7 +315,7 @@ $pieces_map = [
                     <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
                 <?php endif; ?>
             </a>
-            <a href="#" class="text-gray-500 hover:text-primary p-2 rounded-full transition-colors" title="FAQ">
+            <a href="faq.php" class="text-gray-500 hover:text-primary p-2 rounded-full transition-colors" title="FAQ">
                 <span class="material-symbols-outlined">help</span>
             </a>
             <a href="profile.php" class="flex items-center gap-3">

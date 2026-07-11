@@ -101,7 +101,7 @@ try {
 }
 ?>
 <!DOCTYPE html>
-<html class="light" lang="fr">
+<html lang="fr">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -344,13 +344,13 @@ try {
     <div class="ml-64 flex-grow flex flex-col min-h-screen overflow-y-auto custom-scroll">
 
         <!-- ===== HEADER ===== -->
-        <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20 shrink-0">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shrink-0">
             <div class="flex items-center justify-between px-6 md:px-8 h-14">
                 <div class="flex items-center gap-4">
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" style="font-size:18px;">search</span>
                         <input type="text" id="searchInput" placeholder="Rechercher dans les notifications..."
-                            class="w-64 md:w-80 pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#004A99]/20 focus:border-[#004A99] transition-all placeholder:text-slate-400" />
+                            class="w-64 md:w-80 pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:ring-2 focus:ring-[#004A99]/20 focus:border-[#004A99] transition-all placeholder:text-slate-400" />
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
@@ -363,7 +363,7 @@ try {
                     <a href="faq_admin.php" class="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors inline-flex items-center justify-center">
                         <span class="material-symbols-outlined">help</span>
                     </a>
-                    <div class="flex items-center gap-2.5 pl-3 border-l border-slate-200">
+                    <div class="flex items-center gap-2.5">
                         <span class="text-sm font-semibold text-slate-700 hidden sm:block"><?= htmlspecialchars($admin_nom_header); ?></span>
                         <?php if ($admin_avatar): ?>
                             <img src="<?= htmlspecialchars($admin_avatar); ?>" class="w-9 h-9 rounded-full object-cover border-2 border-slate-200 shadow-sm" alt="Avatar" />
@@ -375,149 +375,130 @@ try {
             </div>
         </header>
 
-        <main class="flex-1 px-4 md:px-8 py-6 max-w-6xl mx-auto w-full">
-
-            <!-- ===== TITLE ===== -->
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 fade-in fade-in-d1">
+        <!-- BEGIN: Notification Content -->
+        <main class="p-8 flex-1" data-purpose="notification-center">
+        <div class="max-w-6xl mx-auto">
+            <!-- Page Title -->
+            <div class="flex items-start justify-between mb-8">
                 <div>
                     <div class="flex items-center gap-3">
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Notifications</h1>
+                        <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Notifications</h1>
                         <?php if ($total_non_lues_global > 0): ?>
-                            <span class="count-badge bg-[#004A99] text-white text-sm px-3 py-1 font-bold"><?= $total_non_lues_global; ?> non lue<?= $total_non_lues_global > 1 ? 's' : ''; ?></span>
+                            <span class="bg-[#004A99] text-white text-sm px-3 py-1 font-bold rounded-full"><?= $total_non_lues_global; ?> non lue<?= $total_non_lues_global > 1 ? 's' : ''; ?></span>
                         <?php endif; ?>
                     </div>
-                    <p class="text-sm text-slate-500 mt-1">Centre de notification administrateur — suivez l'activité en temps réel</p>
+                    <p class="text-slate-500 mt-1">Centre de notification administrateur — suivez l'activité en temps réel</p>
                 </div>
                 <?php if ($total_non_lues_global > 0): ?>
-                    <a href="?mark_all_read=1&type=<?= urlencode($filter); ?>"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#004A99] text-white text-sm font-bold rounded-xl hover:bg-[#00387a] transition-all shadow-md shadow-[#004A99]/20 active:scale-95 shrink-0">
+                    <a href="?mark_all_read=1"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#004A99] text-white text-sm font-bold rounded-xl hover:bg-[#00387a] transition-all shadow-md shrink-0">
                         <span class="material-symbols-outlined" style="font-size:18px;">done_all</span>
                         Tout marquer comme lu
                     </a>
                 <?php endif; ?>
             </div>
 
-            <!-- ===== STATS CARDS ===== -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 fade-in fade-in-d2">
-                <div class="glass-card p-4 stat-card" onclick="location.href='?type=all'">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
-                        <span class="material-symbols-outlined text-slate-300" style="font-size:18px;">notifications</span>
+            <!-- Top Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" data-purpose="stats-summary">
+                <!-- Total -->
+                <a href="?type=all" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative block hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</span>
+                        <svg class="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
                     </div>
-                    <p class="text-2xl font-extrabold text-slate-900"><?= number_format($total_all, 0, ',', ' '); ?></p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">toutes les notifications</p>
-                </div>
-                <div class="glass-card p-4 stat-card" onclick="location.href='?type=nouvelle_demande'">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Demandes</span>
-                        <span class="material-symbols-outlined text-blue-400" style="font-size:18px;">note_add</span>
+                    <div class="text-3xl font-bold text-slate-800"><?= number_format($total_all, 0, ',', ' '); ?></div>
+                    <div class="text-[10px] text-slate-400 mt-1">toutes les notifications</div>
+                </a>
+                <!-- Demandes -->
+                <a href="?type=nouvelle_demande" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 block hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Demandes</span>
+                        <svg class="h-4 w-4 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
                     </div>
-                    <p class="text-2xl font-extrabold text-slate-900"><?= number_format($total_nouvelles, 0, ',', ' '); ?></p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">nouvelles soumissions</p>
-                </div>
-                <div class="glass-card p-4 stat-card" onclick="location.href='?type=connexion'">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Connexions</span>
-                        <span class="material-symbols-outlined text-emerald-400" style="font-size:18px;">login</span>
+                    <div class="text-3xl font-bold text-slate-800"><?= number_format($total_nouvelles, 0, ',', ' '); ?></div>
+                    <div class="text-[10px] text-slate-400 mt-1">nouvelles soumissions</div>
+                </a>
+                <!-- Connexions -->
+                <a href="?type=connexion" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 block hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Connexions</span>
+                        <svg class="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
                     </div>
-                    <p class="text-2xl font-extrabold text-slate-900"><?= number_format($total_connexions, 0, ',', ' '); ?></p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">étudiants connectés</p>
-                </div>
-                <div class="glass-card p-4 stat-card" onclick="location.href='?type=statut'">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Statuts</span>
-                        <span class="material-symbols-outlined text-amber-400" style="font-size:18px;">swap_horiz</span>
+                    <div class="text-3xl font-bold text-slate-800"><?= number_format($total_connexions, 0, ',', ' '); ?></div>
+                    <div class="text-[10px] text-slate-400 mt-1">étudiants connectés</div>
+                </a>
+                <!-- Statuts -->
+                <a href="?type=statut" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 block hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Statuts</span>
+                        <svg class="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        </svg>
                     </div>
-                    <p class="text-2xl font-extrabold text-slate-900"><?= number_format($total_statuts, 0, ',', ' '); ?></p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">mises à jour effectuées</p>
-                </div>
-            </div>
-
-            <!-- ===== FILTER TABS ===== -->
-            <div class="flex flex-wrap gap-2 mb-5 fade-in fade-in-d3">
-                <a href="?type=all"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all <?= $filter === 'all' ? 'active-tab' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'; ?>">
-                    Toutes
-                    <?php if ($total_all > 0): ?>
-                        <span class="ml-1.5 count-badge <?= $filter === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'; ?>"><?= $total_all; ?></span>
-                    <?php endif; ?>
-                </a>
-                <a href="?type=nouvelle_demande"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all <?= $filter === 'nouvelle_demande' ? 'active-tab' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'; ?>">
-                    <span class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined" style="font-size:16px;">note_add</span>
-                        Nouvelles demandes
-                    </span>
-                </a>
-                <a href="?type=connexion"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all <?= $filter === 'connexion' ? 'active-tab' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'; ?>">
-                    <span class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined" style="font-size:16px;">login</span>
-                        Connexions
-                    </span>
-                </a>
-                <a href="?type=statut"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all <?= $filter === 'statut' ? 'active-tab' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'; ?>">
-                    <span class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined" style="font-size:16px;">swap_horiz</span>
-                        Mises à jour
-                    </span>
-                </a>
-                <a href="?type=systeme"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all <?= $filter === 'systeme' ? 'active-tab' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'; ?>">
-                    <span class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined" style="font-size:16px;">settings</span>
-                        Système
-                    </span>
+                    <div class="text-3xl font-bold text-slate-800"><?= number_format($total_statuts, 0, ',', ' '); ?></div>
+                    <div class="text-[10px] text-slate-400 mt-1">mises à jour effectuées</div>
                 </a>
             </div>
 
-            <!-- ===== NOTIFICATIONS LIST ===== -->
-            <div class="space-y-2" id="notifList">
+            <!-- Filter Chips -->
+            <div class="flex flex-wrap gap-2 mb-6" data-purpose="notification-filters">
+                <a href="?type=all" class="px-5 py-1.5 rounded-lg <?= $filter === 'all' ? 'bg-[#004A99] text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?> text-sm font-semibold transition-colors">Toutes</a>
+                <a href="?type=nouvelle_demande" class="px-4 py-1.5 rounded-lg <?= $filter === 'nouvelle_demande' ? 'bg-[#004A99] text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?> text-sm font-medium transition-colors flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Nouvelles demandes
+                </a>
+                <a href="?type=connexion" class="px-4 py-1.5 rounded-lg <?= $filter === 'connexion' ? 'bg-[#004A99] text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?> text-sm font-medium transition-colors flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Connexions
+                </a>
+                <a href="?type=statut" class="px-4 py-1.5 rounded-lg <?= $filter === 'statut' ? 'bg-[#004A99] text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?> text-sm font-medium transition-colors flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Mises à jour
+                </a>
+                <a href="?type=systeme" class="px-4 py-1.5 rounded-lg <?= $filter === 'systeme' ? 'bg-[#004A99] text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?> text-sm font-medium transition-colors flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                    Système
+                </a>
+            </div>
+
+            <!-- Main Notification Feed -->
+            <div id="notifList" class="space-y-4">
                 <?php if (empty($notifications)): ?>
-                    <!-- ===== EMPTY STATE ===== -->
-                    <div class="glass-card-strong p-10 md:p-16 text-center fade-in">
-                        <div class="empty-state-icon mb-4">
-                            <?php if ($filter === 'nouvelle_demande'): ?>
-                                <span class="material-symbols-outlined !text-6xl text-slate-200">note_add</span>
-                            <?php elseif ($filter === 'connexion'): ?>
-                                <span class="material-symbols-outlined !text-6xl text-slate-200">login</span>
-                            <?php elseif ($filter === 'statut'): ?>
-                                <span class="material-symbols-outlined !text-6xl text-slate-200">swap_horiz</span>
-                            <?php else: ?>
-                                <span class="material-symbols-outlined !text-6xl text-slate-200">notifications_off</span>
-                            <?php endif; ?>
+                <!-- Empty State -->
+                <div class="bg-white border border-slate-200 rounded-3xl shadow-sm min-h-[450px] flex items-center justify-center p-12" data-purpose="empty-state-container">
+                    <div class="max-w-md text-center">
+                        <!-- Icon -->
+                        <div class="mb-6 flex justify-center">
+                            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
+                                <svg class="h-10 w-10 text-slate-200" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+                                    <line stroke="currentColor" stroke-linecap="round" stroke-width="1.5" x1="4" x2="20" y1="4" y2="20"></line>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-700 mb-1">
-                            <?php if ($filter === 'all' && $total_all == 0): ?>
-                                Aucune notification pour le moment
-                            <?php else: ?>
-                                Aucune notification trouvée
-                            <?php endif; ?>
-                        </h3>
-                        <p class="text-sm text-slate-400 mb-6 max-w-md mx-auto">
-                            <?php if ($filter === 'all' && $total_all == 0): ?>
-                                Les notifications apparaîtront ici lorsqu'un étudiant soumettra une demande, se connectera ou lorsqu'une action administrative sera effectuée.
-                            <?php elseif ($filter === 'nouvelle_demande'): ?>
-                                Aucune nouvelle demande soumise pour le moment. Les étudiants n'ont pas encore envoyé de requête.
-                            <?php elseif ($filter === 'connexion'): ?>
-                                Aucune connexion récente. Les notifications de connexion apparaîtront ici.
-                            <?php elseif ($filter === 'statut'): ?>
-                                Aucune mise à jour de statut récente.
-                            <?php else: ?>
-                                Aucune notification système pour le moment.
-                            <?php endif; ?>
+                        <!-- Text Content -->
+                        <h2 class="text-xl font-bold text-slate-700 mb-2">Aucune notification pour le moment</h2>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Les notifications apparaîtront ici lorsqu'un étudiant soumettra une demande, se connectera ou lorsqu'une action administrative sera effectuée.
                         </p>
-                        <?php if ($filter !== 'all'): ?>
-                            <a href="?type=all" class="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#004A99] text-white text-sm font-bold rounded-xl hover:bg-[#00387a] transition-all shadow-md">
-                                <span class="material-symbols-outlined" style="font-size:16px;">notifications</span>
-                                Voir toutes les notifications
-                            </a>
-                        <?php endif; ?>
                     </div>
+                </div>
                 <?php else: ?>
                     <?php foreach ($notifications as $i => $n):
-                        // Déterminer l'icône et la couleur selon le type
                         $type = $n['type_notif'];
                         switch ($type) {
                             case 'nouvelle_demande':
@@ -552,7 +533,6 @@ try {
                         $initiale .= mb_strtoupper(mb_substr($nom, 0, 1, 'UTF-8'));
                         if (empty(trim($initiale))) $initiale = '?';
 
-                        // Temps relatif
                         $timestamp = strtotime($n['cree_at']);
                         $diff = time() - $timestamp;
                         if ($diff < 60) {
@@ -572,26 +552,19 @@ try {
                     ?>
                         <div class="notif-item glass-card p-4 <?= $est_lue ? 'read' : 'unread'; ?> <?= $border_color; ?> slide-up" style="animation-delay: <?= min($i * 0.05, 0.5); ?>s" data-id="<?= $n['id_notification']; ?>" onclick="marquerLu(<?= $n['id_notification']; ?>, this)">
                             <div class="flex items-start gap-3.5">
-                                <!-- Icône type -->
                                 <div class="type-icon <?= $bg_color; ?> <?= $text_color; ?>">
                                     <span class="material-symbols-outlined"><?= $icon; ?></span>
                                 </div>
-
-                                <!-- Contenu -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center gap-2 mb-0.5">
-                                                <h4 class="text-sm font-bold text-slate-900 truncate <?= !$est_lue ? '' : ''; ?>">
-                                                    <?= htmlspecialchars($n['titre']); ?>
-                                                </h4>
+                                                <h4 class="text-sm font-bold text-slate-900 truncate"><?= htmlspecialchars($n['titre']); ?></h4>
                                                 <?php if (!$est_lue): ?>
                                                     <span class="badge-dot bg-[#004A99] shrink-0"></span>
                                                 <?php endif; ?>
                                             </div>
-                                            <p class="text-sm text-slate-500 leading-relaxed">
-                                                <?= htmlspecialchars($n['message']); ?>
-                                            </p>
+                                            <p class="text-sm text-slate-500 leading-relaxed"><?= htmlspecialchars($n['message']); ?></p>
                                         </div>
                                         <div class="flex flex-col items-end gap-1.5 shrink-0">
                                             <span class="time-text"><?= $time_str; ?></span>
@@ -611,9 +584,7 @@ try {
                                                 <?php endif; ?>
                                             </span>
                                             <?php if (!empty($n['id_demande'])): ?>
-                                                <a href="traiter_demande.php?id=<?= $n['id_demande']; ?>" class="text-[11px] font-bold text-[#004A99] hover:underline" onclick="event.stopPropagation();">
-                                                    Voir la demande →
-                                                </a>
+                                                <a href="traiter_demande.php?id=<?= $n['id_demande']; ?>" class="text-[11px] font-bold text-[#004A99] hover:underline" onclick="event.stopPropagation();">Voir la demande →</a>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
@@ -624,36 +595,32 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- ===== PAGINATION ===== -->
+            <!-- Pagination -->
             <?php if ($total_pages > 1): ?>
-                <div class="flex items-center justify-center gap-2 mt-8 fade-in">
+                <div class="flex items-center justify-center gap-2 mt-8">
                     <?php if ($page > 1): ?>
-                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $page - 1; ?>" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                            ← Précédent
-                        </a>
+                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $page - 1; ?>" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">← Précédent</a>
                     <?php endif; ?>
                     <?php for ($p = max(1, $page - 2); $p <= min($total_pages, $page + 2); $p++): ?>
-                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $p; ?>"
-                            class="w-9 h-9 flex items-center justify-center rounded-xl text-sm font-semibold transition-all <?= $p === $page ? 'bg-[#004A99] text-white shadow-md' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?>">
-                            <?= $p; ?>
-                        </a>
+                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $p; ?>" class="w-9 h-9 flex items-center justify-center rounded-xl text-sm font-semibold transition-all <?= $p === $page ? 'bg-[#004A99] text-white shadow-md' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'; ?>"><?= $p; ?></a>
                     <?php endfor; ?>
                     <?php if ($page < $total_pages): ?>
-                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $page + 1; ?>" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                            Suivant →
-                        </a>
+                        <a href="?type=<?= urlencode($filter); ?>&page=<?= $page + 1; ?>" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">Suivant →</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
 
-            <!-- ===== FOOTER ===== -->
-            <div class="mt-10 pt-6 border-t border-slate-200 text-center">
-                <p class="text-xs text-slate-400">
-                    Centre de notifications administrateur · IFRI Portail ·
-                    <a href="?mark_all_read=1" class="text-[#004A99] hover:underline font-medium">Tout marquer comme lu</a>
-                </p>
-            </div>
+            <!-- Footer Info -->
+            <footer class="mt-12 pt-6 border-t border-slate-200 flex justify-center items-center gap-1.5 text-xs text-slate-400" data-purpose="admin-footer">
+                <span>Centre de notifications administrateur</span>
+                <span class="text-slate-300">•</span>
+                <span>IFRI Portail</span>
+                <span class="text-slate-300">•</span>
+                <a href="?mark_all_read=1" class="text-[#004A99] font-medium hover:underline">Tout marquer comme lu</a>
+            </footer>
+        </div>
         </main>
+        <!-- END: Notification Content -->
     </div>
 
     <script>
@@ -710,6 +677,8 @@ try {
                 }
             });
         });
-    </script>
+</script>
+
+<script src="../assets/js/app.js"></script>
 </body>
 </html>

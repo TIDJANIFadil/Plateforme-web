@@ -123,7 +123,7 @@ $pieces_map = [
 ];
 ?>
 <!DOCTYPE html>
-<html class="light" lang="fr">
+<html lang="fr">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -164,7 +164,6 @@ $pieces_map = [
     </style>
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
@@ -255,10 +254,10 @@ $pieces_map = [
         }
     </script>
 </head>
-<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<body class="bg-white text-slate-800 font-body-md overflow-hidden">
 <div class="flex h-screen overflow-hidden">
 
-    <aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-base px-sm overflow-y-auto z-40">
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col py-base px-sm overflow-y-auto z-40">
         <div class="mb-lg px-base">
             <div class="h-12 w-12 bg-primary text-white font-extrabold flex items-center justify-center rounded-xl mb-xs text-xl">
                 <img src="./images/IFRI.png" alt="Logo IFRI" />
@@ -299,23 +298,21 @@ $pieces_map = [
         </div>
     </aside>
 
-    <main class="flex-1 ml-64 overflow-y-auto">
+    <main class="flex-1 ml-64 overflow-y-auto bg-[#f0f4f8]">
 
-        <header class="flex justify-between items-center w-full px-gutter h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant shadow-sm">
+        <header class="flex justify-between items-center w-full px-gutter h-16 sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
             <div class="flex items-center gap-sm">
                 <div class="flex items-center bg-surface-container-low px-sm py-xs rounded-full border border-outline-variant">
                     <span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
-                    <input class="bg-transparent border-none focus:ring-0 text-label-md w-64" placeholder="Rechercher une demande..." type="text"/>
+                    <input class="bg-transparent border-none focus:ring-0 text-label-md w-64" placeholder="Rechercher une demande..." type="text" data-search="tr.search-row"/>
                 </div>
             </div>
 
             <div class="flex items-center gap-md">
-                <a href="notifications.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $non_lues > 0 ? 'bg-amber-100 bell-ring' : 'hover:bg-surface-container'; ?> transition-all">
-                    <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-on-surface-variant'; ?>" style="font-size:20px;" data-icon="notifications">notifications</span>
+                <a href="notifications.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all">
+                    <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;" data-icon="notifications">notifications</span>
                     <?php if ($non_lues > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($non_lues, 99); ?></span>
-                    <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                     <?php endif; ?>
                 </a>
 
@@ -389,7 +386,7 @@ $pieces_map = [
             </div>
 
             <div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
-                <div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+                <div class="px-lg py-md border-b border-outline-variant bg-surface-container-low/50 flex justify-between items-center">
                     <h3 class="font-headline-md text-headline-md text-on-surface">Vos Demandes Récentes</h3>
                     <button class="text-label-md text-primary flex items-center gap-xs">
                         <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
@@ -399,7 +396,7 @@ $pieces_map = [
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-surface-container-lowest text-on-surface-variant text-label-sm">
+                            <tr class="bg-surface-container-lowest/80 text-on-surface-variant text-label-sm">
                                 <th class="px-lg py-md font-bold">TYPE DE DOCUMENT</th>
                                 <th class="px-lg py-md font-bold">DATE</th>
                                 <th class="px-lg py-md font-bold">STATUT</th>
@@ -431,7 +428,7 @@ $pieces_map = [
                                         default => 'bg-slate-400'
                                     };
                                 ?>
-                                <tr class="hover:bg-surface-container-low transition-colors">
+                                <tr class="search-row hover:bg-surface-container-low transition-colors">
                                     <td class="px-lg py-md">
                                         <span class="font-semibold text-on-surface"><?= htmlspecialchars($d['libelle']); ?></span>
                                     </td>
@@ -649,5 +646,8 @@ $pieces_map = [
         if (sel.value) afficherPieces(sel.value);
     });
 </script>
+
+<script src="assets/js/app.js"></script>
+<?php require_once 'contact_modal.php'; ?>
 </body>
 </html>

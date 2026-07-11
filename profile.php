@@ -235,7 +235,7 @@ $pieces_map = [
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             <span class="text-sm font-medium">Demandes</span>
         </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 text-gray-800 sidebar-item-active rounded-lg shadow-sm" href="profile.php" style="color: #00730D;">
+        <a class="flex items-center gap-3 px-3 py-2.5 text-gray-800 sidebar-item-active rounded-lg shadow-sm" href="profile.php">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             <span class="text-sm font-medium">Profile</span>
         </a>
@@ -268,13 +268,15 @@ $pieces_map = [
         </div>
         <div class="flex items-center gap-4">
             <!-- Notification bell -->
-            <a href="notifications.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $non_lues > 0 ? 'bg-amber-100 bell-ring' : 'hover:bg-gray-100'; ?> transition-all" title="Notifications">
-                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:20px;">notifications</span>
+            <a href="notifications.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all" title="Notifications">
+                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($non_lues > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($non_lues, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                 <?php endif; ?>
+            </a>
+            <!-- Help button -->
+            <a href="faq.php" class="inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-all text-gray-500" title="Aide">
+                <span class="material-symbols-outlined" style="font-size:20px;">help</span>
             </a>
             <div class="flex items-center gap-3">
                 <span class="text-sm font-semibold text-ifri-darkBlue"><?= htmlspecialchars($nom_complet) ?></span>
@@ -289,7 +291,7 @@ $pieces_map = [
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-8">
+    <main class="flex-1 overflow-y-auto p-8 bg-[#f0f4f8]">
         <div class="max-w-6xl mx-auto">
 
             <?php if (!empty($upload_error)): ?>
@@ -341,7 +343,7 @@ $pieces_map = [
 
                         <div class="space-y-2">
                             <?php if (!empty($photo_path) && is_file(__DIR__ . '/' . $photo_path)): ?>
-                                <form method="post" action="profile.php" onsubmit="return confirm('Es-tu sûr de vouloir supprimer ta photo de profil ?');">
+                                <form method="post" action="profile.php" id="deleteProfilePhotoForm">
                                     <button type="submit" name="delete_profile_photo" class="w-full rounded-2xl border border-red-200 bg-red-50 px-5 py-3 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h4a3 3 0 003-3V3a3 3 0 00-3-3h-4a3 3 0 00-3 3zm-4 4h8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                                         Supprimer la photo actuelle
@@ -588,5 +590,20 @@ $pieces_map = [
     });
 </script>
 
+
+<script src="assets/js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const delForm = document.getElementById('deleteProfilePhotoForm');
+        if (delForm) {
+            delForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const ok = await confirmModal('Es-tu sûr de vouloir supprimer ta photo de profil ?', { type: 'danger' });
+                if (ok) this.submit();
+            });
+        }
+    });
+</script>
+<?php require_once 'contact_modal.php'; ?>
 </body>
 </html>

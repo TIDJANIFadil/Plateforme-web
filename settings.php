@@ -135,7 +135,6 @@ $pieces_map = [
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
           theme: {
             extend: {
               "colors": {
@@ -295,7 +294,7 @@ $pieces_map = [
     </div>
 </aside>
 
-<main class="flex-1 md:ml-64 flex flex-col">
+<main class="flex-1 md:ml-64 flex flex-col bg-[#f0f4f8]">
     <header class="sticky top-0 z-50 flex justify-between items-center w-full px-md py-sm bg-white border-b border-outline-variant shadow-sm backdrop-blur-md bg-opacity-90">
         <div class="flex items-center gap-md">
             <button class="md:hidden text-primary">
@@ -307,12 +306,10 @@ $pieces_map = [
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <a href="notifications.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $non_lues > 0 ? 'bg-amber-100 bell-ring' : 'hover:bg-gray-100'; ?> transition-all" title="Notifications">
-                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:20px;">notifications</span>
+            <a href="notifications.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all" title="Notifications">
+                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($non_lues > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($non_lues, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                 <?php endif; ?>
             </a>
             <a href="faq.php" class="text-gray-500 hover:text-primary p-2 rounded-full transition-colors" title="FAQ">
@@ -685,5 +682,8 @@ $pieces_map = [
         if (sel.value) afficherPieces(sel.value);
     });
 </script>
+
+<script src="assets/js/app.js"></script>
+<?php require_once 'contact_modal.php'; ?>
 </body>
 </html>

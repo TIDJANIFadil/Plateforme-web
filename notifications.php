@@ -112,7 +112,7 @@ $pieces_map = [
 ];
 ?>
 <!DOCTYPE html>
-<html class="light" lang="fr">
+<html lang="fr">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -142,7 +142,6 @@ $pieces_map = [
     </style>
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
@@ -233,11 +232,11 @@ $pieces_map = [
         }
     </script>
 </head>
-<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<body class="bg-white text-slate-800 font-body-md overflow-hidden">
 <div class="flex h-screen overflow-hidden">
 
     <!-- BARRE LATERALE (ASIDE) -->
-    <aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-base px-sm overflow-y-auto z-40">
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col py-base px-sm overflow-y-auto z-40">
         <div class="mb-lg px-base">
             <div class="h-12 w-12 bg-primary text-white font-extrabold flex items-center justify-center rounded-xl mb-xs text-xl">
                 <img src="./images/IFRI.png" alt="Logo IFRI" />
@@ -279,9 +278,9 @@ $pieces_map = [
     </aside>
 
     <!-- EN-TETE ET CONTENU PRINCIPAL -->
-    <main class="flex-1 ml-64 overflow-y-auto">
+    <main class="flex-1 ml-64 overflow-y-auto bg-[#f0f4f8]">
 
-        <header class="flex justify-between items-center w-full px-gutter h-16 sticky top-0 z-50 bg-surface border-b border-outline-variant shadow-sm">
+        <header class="flex justify-between items-center w-full px-gutter h-16 sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
             <div class="flex items-center gap-sm">
                 <div class="flex items-center bg-surface-container-low px-sm py-xs rounded-full border border-outline-variant">
                     <span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
@@ -290,12 +289,12 @@ $pieces_map = [
             </div>
 
             <div class="flex items-center gap-md">
-                <button class="text-on-surface-variant bg-surface-container transition-colors p-base rounded-full relative">
-                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                <div class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : ''; ?>">
+                    <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-on-surface-variant'; ?>" style="font-size:18px;" data-icon="notifications">notifications</span>
                     <?php if ($non_lues > 0): ?>
-                        <span class="absolute top-1 right-1 h-2 w-2 bg-error rounded-full glow-dot"></span>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                     <?php endif; ?>
-                </button>
+                </div>
 
                 <a href="faq.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
                     <span class="material-symbols-outlined" data-icon="help">help</span>
@@ -575,7 +574,10 @@ $pieces_map = [
     document.addEventListener('DOMContentLoaded', function() {
         var sel = document.getElementById('type_doc');
         if (sel.value) afficherPieces(sel.value);
-    });
-</script>
+        });
+    </script>
+
+<script src="assets/js/app.js"></script>
+<?php require_once 'contact_modal.php'; ?>
 </body>
 </html>

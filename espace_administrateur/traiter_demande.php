@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_statut'])) {
                     if ($etudiant) {
                         // Création de la notification
                         $notif_titre = "📄 Document prêt — " . $etudiant['libelle'];
-                        $notif_msg = "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " est disponible. Utilisez votre code secret pour le télécharger dans votre espace.";
+                        $notif_msg = "Bonjour " . $etudiant['prenom'] . ", votre " . strtolower($etudiant['libelle']) . " est disponible. Votre code secret : " . $code_secret . ". Utilisez-le pour télécharger votre document dans votre espace.";
                         $stmt_notif = $pdo->prepare("INSERT INTO notifications (titre, message, niveau, id_etudiant, cree_at) VALUES (?, ?, 'info', ?, NOW())");
                         $stmt_notif->execute([$notif_titre, $notif_msg, $etudiant['id_etudiant']]);
 
@@ -555,12 +555,10 @@ if (isset($_SESSION['admin_email'])) {
         </div>
         <div class="flex items-center gap-4">
             <!-- Notification bell -->
-            <a href="notifications_admin.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $admin_notif_count > 0 ? 'bg-amber-100 bell-ring' : 'hover:bg-slate-100'; ?> transition-all">
-                <span class="material-symbols-outlined <?= $admin_notif_count > 0 ? 'text-amber-600' : 'text-slate-500'; ?>" style="font-size:20px;">notifications</span>
+            <a href="notifications_admin.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $admin_notif_count > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all">
+                <span class="material-symbols-outlined <?= $admin_notif_count > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($admin_notif_count > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($admin_notif_count, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($admin_notif_count, 99); ?></span>
                 <?php endif; ?>
             </a>
             <span class="text-sm font-medium text-slate-500"><?= $admin_nom_header; ?></span>
@@ -720,7 +718,7 @@ if (isset($_SESSION['admin_email'])) {
                                         <p class="text-xs text-green-600">Téléchargé le <?= date('d/m/Y H:i'); ?></p>
                                     </div>
                                 </div>
-                                <a href="../<?= $current_pdf; ?>" target="_blank" class="inline-flex items-center gap-1.5 bg-white text-[#004A99] font-semibold text-sm px-4 py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors">
+                                <a href="../<?= $current_pdf; ?>" target="_blank" onclick="return previewFile('../<?= $current_pdf; ?>', 'Demande #<?= $current_code; ?>');" class="inline-flex items-center gap-1.5 bg-white text-[#004A99] font-semibold text-sm px-4 py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors">
                                     <span class="material-symbols-outlined text-sm">download</span> Voir PDF
                                 </a>
                             </div>
@@ -788,6 +786,7 @@ if (isset($_SESSION['admin_email'])) {
                                         ?>
                                         <?php if ($file_exists): ?>
                                             <a href="../<?= htmlspecialchars($piece['fichier']); ?>" target="_blank"
+                                               onclick="return previewFile('../<?= htmlspecialchars($piece['fichier']); ?>', '<?= htmlspecialchars(addslashes($piece['nom_piece'])); ?>');"
                                                class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-all border border-blue-200">
                                                 <span class="material-symbols-outlined text-sm">visibility</span>
                                                 Voir
@@ -1102,5 +1101,7 @@ if (isset($_SESSION['admin_email'])) {
         <?php endif; ?>
 
     </script>
+
+<script src="../assets/js/app.js"></script>
 </body>
 </html>

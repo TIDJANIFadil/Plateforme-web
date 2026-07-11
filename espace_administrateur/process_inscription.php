@@ -14,6 +14,25 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 // Connexion BDD via db.php
 require_once __DIR__ . '/../ifri_gestion_docs.php';
 
+// Détection appel AJAX
+$is_ajax = isset($_GET['ajax']) && $_GET['ajax'] === '1';
+
+function respond($success, $message) {
+    global $is_ajax;
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => $success, 'message' => $message]);
+        exit;
+    }
+    if ($success) {
+        $_SESSION['inscription_success'] = $message;
+    } else {
+        $_SESSION['inscription_error'] = $message;
+    }
+    header('Location: dashboard_admin.php');
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom = trim($_POST['prenom'] ?? '');
     $nom = trim($_POST['nom'] ?? '');
@@ -27,9 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check->execute([$matricule, $email]);
 
         if ($check->rowCount() > 0) {
-            $_SESSION['inscription_error'] = "Ce matricule ou cet email est déjà utilisé.";
-            header('Location: dashboard_admin.php');
-            exit;
+            respond(false, "Ce matricule ou cet email est déjà utilisé.");
         }
 
         // 2. Génération d'un mot de passe temporaire aléatoire (8 caractères)
@@ -104,18 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($mail_sent) {
-                $_SESSION['inscription_success'] = "Étudiant inscrit avec succès. Les identifiants ont été envoyés par email.";
+                respond(true, "Étudiant inscrit avec succès. Les identifiants ont été envoyés par email.");
             } else {
-                $_SESSION['inscription_error'] = "L'étudiant a bien été inscrit mais l'envoi d'email a échoué. Vérifiez la configuration SMTP dans le fichier process_inscription.php.";
+                respond(true, "Étudiant inscrit avec succès. Email non envoyé (SMTP non configuré).");
             }
 
         } else {
-            $_SESSION['inscription_error'] = "Erreur lors de l'inscription en base de données.";
+            respond(false, "Erreur lors de l'inscription en base de données.");
         }
     } else {
-        $_SESSION['inscription_error'] = "Veuillez remplir tous les champs.";
+        respond(false, "Veuillez remplir tous les champs.");
     }
-
-    header('Location: dashboard_admin.php');
-    exit;
 }

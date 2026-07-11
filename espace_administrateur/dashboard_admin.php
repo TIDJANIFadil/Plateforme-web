@@ -143,12 +143,10 @@ $demandes = $pdo->query($query)->fetchAll();
             <input class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-full bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-ifri-blue transition-all" placeholder="Rechercher une demande..." type="text"/>
         </div>
         <div class="flex items-center space-x-6">
-            <a href="notifications_admin.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $admin_notif_count > 0 ? 'bg-amber-100 bell-ring' : 'hover:bg-surface-container'; ?> transition-all">
-                <span class="material-symbols-outlined <?= $admin_notif_count > 0 ? 'text-amber-600' : 'text-on-surface-variant'; ?>" style="font-size:20px;" data-icon="notifications">notifications</span>
+            <a href="notifications_admin.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $admin_notif_count > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all">
+                <span class="material-symbols-outlined <?= $admin_notif_count > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($admin_notif_count > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($admin_notif_count, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($admin_notif_count, 99); ?></span>
                 <?php endif; ?>
             </a>
 
@@ -368,7 +366,7 @@ $demandes = $pdo->query($query)->fetchAll();
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             </button>
         </div>
-        <form method="POST" action="process_inscription.php" class="p-6 space-y-4">
+        <form method="POST" action="process_inscription.php" id="inscriptionForm" class="p-6 space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Prénom</label>
@@ -391,9 +389,13 @@ $demandes = $pdo->query($query)->fetchAll();
                 <button type="button" onclick="closeInscriptionModal()" class="flex-1 py-3 border border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 text-sm">
                     Annuler
                 </button>
-                <button type="submit" class="flex-1 py-3 bg-ifri-blue text-white rounded-xl font-semibold hover:bg-blue-700 text-sm flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">mail</span>
-                    Inscrire & envoyer
+                <button type="submit" id="inscriptionBtn" class="flex-1 py-3 bg-ifri-blue text-white rounded-xl font-semibold hover:bg-blue-700 text-sm flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span id="btnIcon" class="material-symbols-outlined text-[18px]">mail</span>
+                    <span id="btnText">Inscrire & envoyer</span>
+                    <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-white flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
                 </button>
             </div>
         </form>
@@ -404,6 +406,13 @@ $demandes = $pdo->query($query)->fetchAll();
     function openInscriptionModal() {
         document.getElementById('inscriptionModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        // Réinitialiser le formulaire
+        document.getElementById('inscriptionForm').reset();
+        document.getElementById('inscriptionBtn').disabled = false;
+        document.getElementById('btnIcon').classList.remove('hidden');
+        document.getElementById('btnText').textContent = "Inscrire & envoyer";
+        document.getElementById('btnSpinner').classList.add('hidden');
+        document.querySelector('#inscriptionForm .text-green-600')?.remove();
     }
 
     function closeInscriptionModal() {
@@ -417,7 +426,84 @@ $demandes = $pdo->query($query)->fetchAll();
             closeInscriptionModal();
         }
     });
+
+    // Toast system
+    function showToast(message, type) {
+        var colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
+        var icons = { success: 'check_circle', error: 'error', info: 'info' };
+        var bg = colors[type] || 'bg-gray-800';
+        var icon = icons[type] || 'info';
+        var toast = document.createElement('div');
+        toast.className = 'fixed top-6 right-6 z-[200] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white text-sm font-medium ' + bg + ' transition-all duration-500 translate-x-[120%] opacity-0';
+        toast.innerHTML = '<span class="material-symbols-outlined text-[20px]">' + icon + '</span><span>' + message + '</span><button onclick="this.parentElement.remove()" class="ml-2 opacity-70 hover:opacity-100"><span class="material-symbols-outlined text-[18px]">close</span></button>';
+        document.body.appendChild(toast);
+        requestAnimationFrame(function() {
+            toast.classList.remove('translate-x-[120%]', 'opacity-0');
+            toast.classList.add('translate-x-0', 'opacity-100');
+        });
+        setTimeout(function() { toast.classList.add('translate-x-[120%]', 'opacity-0'); setTimeout(function() { toast.remove(); }, 500); }, 4000);
+    }
+
+    // Inscription AJAX
+    document.getElementById('inscriptionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var btn = document.getElementById('inscriptionBtn');
+        var icon = document.getElementById('btnIcon');
+        var text = document.getElementById('btnText');
+        var spinner = document.getElementById('btnSpinner');
+
+        // Mode chargement
+        btn.disabled = true;
+        icon.classList.add('hidden');
+        text.textContent = "Inscription en cours...";
+        spinner.classList.remove('hidden');
+
+        var formData = new FormData(this);
+
+        fetch('process_inscription.php?ajax=1', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success) {
+                // Effet waouh : changer le bouton en vert avec check
+                text.textContent = "✓ Inscrit avec succès !";
+                spinner.classList.add('hidden');
+                icon.classList.remove('hidden');
+                icon.textContent = 'check_circle';
+                btn.className = btn.className.replace('bg-ifri-blue', 'bg-green-500').replace('hover:bg-blue-700', 'hover:bg-green-600');
+
+                showToast(data.message, 'success');
+
+                // Fermer le modal après un petit délai
+                setTimeout(function() {
+                    closeInscriptionModal();
+                    // Recharger la page pour mettre à jour les stats
+                    location.reload();
+                }, 1200);
+            } else {
+                btn.disabled = false;
+                icon.classList.remove('hidden');
+                icon.textContent = 'mail';
+                text.textContent = "Inscrire & envoyer";
+                spinner.classList.add('hidden');
+                showToast(data.message, 'error');
+            }
+        })
+        .catch(function() {
+            btn.disabled = false;
+            icon.classList.remove('hidden');
+            icon.textContent = 'mail';
+            text.textContent = "Inscrire & envoyer";
+            spinner.classList.add('hidden');
+            showToast("Erreur réseau. Vérifiez votre connexion.", 'error');
+        });
+    });
 </script>
+
+<script src="../assets/js/app.js"></script>
 
 </body>
 </html>

@@ -101,3 +101,19 @@ CREATE TABLE IF NOT EXISTS `admin_notifications` (
   KEY `fk_admin_notif_etudiant` (`id_etudiant`),
   KEY `fk_admin_notif_demande` (`id_demande`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ==============================================================
+-- 9. Table pour les messages de contact des étudiants
+-- ==============================================================
+CREATE TABLE IF NOT EXISTS `messages_contact` (
+  `id_message` INT NOT NULL AUTO_INCREMENT,
+  `id_etudiant` INT DEFAULT NULL,
+  `sujet` VARCHAR(200) NOT NULL,
+  `message` TEXT NOT NULL,
+  `piece_jointe` VARCHAR(255) DEFAULT NULL,
+  `lu` TINYINT(1) NOT NULL DEFAULT 0,
+  `cree_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_message`),
+  KEY `fk_contact_etudiant` (`id_etudiant`),
+  CONSTRAINT `fk_contact_etudiant` FOREIGN KEY (`id_etudiant`) REFERENCES `etudiants` (`id_etudiant`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

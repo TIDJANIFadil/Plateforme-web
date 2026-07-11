@@ -202,7 +202,7 @@ $pieces_map = [
             </svg>
             <span class="font-medium">Tableau de bord</span>
         </a>
-        <a class="flex items-center gap-3 px-3 py-3 active-nav rounded-ifri shadow-sm" href="mes_demandes.php" style="color: #00730D;">
+        <a class="flex items-center gap-3 px-3 py-3 active-nav rounded-ifri shadow-sm" href="mes_demandes.php">
             <svg class="h-5 w-5" fill="none" stroke="#00730D" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
             </svg>
@@ -244,15 +244,13 @@ $pieces_map = [
                     <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                 </svg>
             </span>
-            <input class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-full bg-gray-50 text-sm focus:outline-none focus:ring-1 focus:ring-ifri-blue focus:border-ifri-blue" placeholder="Rechercher une demande..." type="text"/>
+            <input class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-full bg-gray-50 text-sm focus:outline-none focus:ring-1 focus:ring-ifri-blue focus:border-ifri-blue" placeholder="Rechercher une demande..." type="text" data-search="tr.search-row"/>
         </div>
         <div class="flex items-center gap-4">
-            <a href="notifications.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full <?= $non_lues > 0 ? 'bg-amber-100 bell-ring' : 'hover:text-ifri-blue hover:bg-gray-100'; ?> transition-all" title="Notifications">
-                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:20px;">notifications</span>
+            <a href="notifications.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all" title="Notifications">
+                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($non_lues > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($non_lues, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                 <?php endif; ?>
             </a>
             <a href="faq.php" class="text-on-surface-variant hover:bg-surface-container transition-colors p-base rounded-full inline-flex items-center justify-center">
@@ -270,7 +268,7 @@ $pieces_map = [
             </a>
         </div>
     </header>
-    <main class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+    <main class="p-8 space-y-8 max-w-7xl mx-auto w-full bg-[#f0f4f8]">
 
         <?php if (isset($_GET['success']) && $_GET['success'] === '1'): ?>
         <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3 fade-in">
@@ -374,7 +372,7 @@ $pieces_map = [
                         </tr>
                     <?php else: ?>
                         <?php foreach ($demandes as $demande): ?>
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="search-row hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-4">
                                         <div class="p-2 bg-indigo-50 rounded-lg text-indigo-500">
@@ -620,5 +618,8 @@ $pieces_map = [
         });
     </script>
 
+
+<script src="assets/js/app.js"></script>
+<?php require_once 'contact_modal.php'; ?>
     </body>
     </html>

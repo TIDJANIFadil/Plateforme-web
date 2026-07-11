@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_demande > 0) {
 
     try {
         $stmt = $pdo->prepare("
-            SELECT d.*, t.libelle as doc_type, e.nom, e.prenom
+            SELECT d.*, t.libelle as doc_type, e.nom, e.prenom, e.matricule
             FROM demandes d
             JOIN types_documents t ON d.id_type_doc = t.id_type
             JOIN etudiants e ON d.id_etudiant = e.id_etudiant
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id_demande > 0) {
     // Pré-remplir les infos de la demande
     try {
         $stmt = $pdo->prepare("
-            SELECT d.*, t.libelle as doc_type, e.nom, e.prenom
+            SELECT d.*, t.libelle as doc_type, e.nom, e.prenom, e.matricule
             FROM demandes d
             JOIN types_documents t ON d.id_type_doc = t.id_type
             JOIN etudiants e ON d.id_etudiant = e.id_etudiant
@@ -66,6 +66,7 @@ $student_nom = $demande ? htmlspecialchars($demande['prenom'] . ' ' . $demande['
 $doc_type = $demande ? htmlspecialchars($demande['doc_type']) : '';
 $matricule = $demande ? htmlspecialchars($demande['matricule'] ?? '') : '';
 $code_cache = $demande ? htmlspecialchars($demande['code_secret']) : '';
+$date_creation = $demande ? date('d/m/Y', strtotime($demande['date_demande'])) : '';
 
 // Initiales
 $init_p = $demande ? mb_strtoupper(mb_substr($demande['prenom'] ?? '', 0, 1, 'UTF-8'), 'UTF-8') : '';
@@ -99,7 +100,7 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
             border-radius: 32px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.5);
             width: 100%;
-            max-width: 480px;
+            max-width: 900px;
             overflow: hidden;
             animation: cardEnter 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
             transform-origin: center;
@@ -268,6 +269,17 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
             border: none; cursor: pointer;
         }
         .btn-primary:hover { background: #00387a; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,74,153,0.25); }
+
+        .doc-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+        }
+
+@media (max-width: 768px) {
+            .main-card { max-width: 480px; }
+            .split-layout { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
@@ -332,7 +344,6 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
             <!-- Confetti + auto-download -->
             <script>
             (function() {
-                // Confetti
                 const colors = ['#004A99','#006e0c','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
                 for (let i = 0; i < 80; i++) {
                     const el = document.createElement('div');
@@ -355,7 +366,7 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
             </script>
 
         <?php else: ?>
-            <!-- ===== FORMULAIRE DE CODE SECRET ===== -->
+            <!-- ===== FORMULAIRE DE CODE SECRET + INFOS DOCUMENT ===== -->
             <div class="p-8">
                 <!-- Logo & branding -->
                 <div class="text-center mb-6 fade-up fade-up-d1">
@@ -364,67 +375,100 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
                     </div>
                     <h1 class="text-xl font-extrabold text-slate-900">Téléchargement sécurisé</h1>
                     <p class="text-sm text-slate-500 mt-1">
-                        Votre document <span class="font-bold text-[#004A99]"><?= $doc_type; ?></span> est prêt
+                        Saisissez votre code secret pour télécharger votre document
                     </p>
                 </div>
 
-                <!-- Infos étudiant compactes -->
-                <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 mb-6 border border-slate-200 fade-up fade-up-d2">
-                    <div class="w-10 h-10 rounded-full bg-[#004A99] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                        <?= $initiales; ?>
+                <!-- Split Layout: Document Info + Code Form -->
+                <div class="split-layout flex gap-6 items-stretch fade-up fade-up-d2">
+
+                    <!-- LEFT: Document Information Card -->
+                    <div class="doc-card p-5 flex-1 flex flex-col">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-[#004A99]/10 text-[#004A99] flex items-center justify-center">
+                                <span class="material-symbols-outlined text-sm">description</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Document</span>
+                        </div>
+
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#004A99] to-[#00387a] text-white flex items-center justify-center font-bold text-xl shrink-0 shadow-md">
+                                <?= $initiales; ?>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900 text-lg"><?= $doc_type; ?></p>
+                                <p class="text-sm text-slate-500"><?= $student_nom; ?></p>
+                                <p class="text-xs text-slate-400"><?= $matricule; ?></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto space-y-2.5">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-500">Statut</span>
+                                <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block glow-dot"></span>
+                                    Prêt
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-500">Date de disponibilité</span>
+                                <span class="font-semibold text-slate-700"><?= $date_creation; ?></span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-500">Format</span>
+                                <span class="font-semibold text-slate-700 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm text-red-500">picture_as_pdf</span>
+                                    PDF
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-left text-sm">
-                        <p class="font-semibold text-slate-900"><?= $student_nom; ?></p>
-                        <p class="text-xs text-slate-500"><?= $matricule; ?></p>
+
+                    <!-- RIGHT: Code Secret Form -->
+                    <div class="flex-1 flex flex-col justify-center">
+                        <!-- Message d'erreur -->
+                        <?php if ($error_msg): ?>
+                            <div class="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700 mb-5 flex items-center gap-2" id="errorMessage">
+                                <span class="material-symbols-outlined text-sm">error</span>
+                                <?= $error_msg; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <form id="codeForm" method="POST" action="telechargement.php?id=<?= $id_demande; ?>" autocomplete="off">
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider text-center mb-3">
+                                Entrez votre code secret à 8 caractères
+                            </p>
+
+                            <div class="code-inputs" id="codeInputs">
+                                <?php for ($i = 0; $i < 8; $i++): ?>
+                                    <input type="text" maxlength="1"
+                                        class="code-input"
+                                        id="code_<?= $i; ?>"
+                                        data-index="<?= $i; ?>"
+                                        inputmode="text"
+                                        autocomplete="off"
+                                        <?= $i === 0 ? 'autofocus' : ''; ?>
+                                        oninput="handleInput(this, <?= $i; ?>)"
+                                        onkeydown="handleKeydown(event, <?= $i; ?>)"
+                                        onpaste="handlePaste(event)" />
+                                <?php endfor; ?>
+                            </div>
+
+                            <input type="hidden" name="code_secret" id="code_secret_hidden" value="">
+
+                            <p class="text-xs text-slate-400 text-center mt-3">
+                                Le code vous a été communiqué par l'administration
+                            </p>
+
+                            <button type="submit" id="submitCode" disabled
+                                class="w-full mt-6 bg-[#004A99] text-white font-bold py-3.5 rounded-xl text-sm shadow-sm hover:bg-[#00387a] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                                <span class="material-symbols-outlined text-sm">lock_open</span>
+                                Vérifier et télécharger
+                            </button>
+                        </form>
                     </div>
-                    <div class="ml-auto text-right">
-                        <span class="badge bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">
-                            ✅ Prêt
-                        </span>
-                    </div>
+
                 </div>
-
-                <!-- Message d'erreur -->
-                <?php if ($error_msg): ?>
-                    <div class="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700 mb-5 fade-up flex items-center gap-2" id="errorMessage">
-                        <span class="material-symbols-outlined text-sm">error</span>
-                        <?= $error_msg; ?>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Formulaire -->
-                <form id="codeForm" method="POST" action="telechargement.php?id=<?= $id_demande; ?>" class="fade-up fade-up-d3" autocomplete="off">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider text-center mb-3">
-                        Entrez votre code secret à 8 caractères
-                    </p>
-
-                    <div class="code-inputs" id="codeInputs">
-                        <?php for ($i = 0; $i < 8; $i++): ?>
-                            <input type="text" maxlength="1"
-                                class="code-input"
-                                id="code_<?= $i; ?>"
-                                data-index="<?= $i; ?>"
-                                inputmode="text"
-                                autocomplete="off"
-                                <?= $i === 0 ? 'autofocus' : ''; ?>
-                                oninput="handleInput(this, <?= $i; ?>)"
-                                onkeydown="handleKeydown(event, <?= $i; ?>)"
-                                onpaste="handlePaste(event)" />
-                        <?php endfor; ?>
-                    </div>
-
-                    <input type="hidden" name="code_secret" id="code_secret_hidden" value="">
-
-                    <p class="text-xs text-slate-400 text-center mt-3">
-                        Le code vous a été communiqué par l'administration
-                    </p>
-
-                    <button type="submit" id="submitCode" disabled
-                        class="w-full mt-6 bg-[#004A99] text-white font-bold py-3.5 rounded-xl text-sm shadow-sm hover:bg-[#00387a] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                        <span class="material-symbols-outlined text-sm">lock_open</span>
-                        Vérifier et télécharger
-                    </button>
-                </form>
 
                 <div class="mt-6 pt-5 border-t border-slate-200 text-center fade-up fade-up-d4">
                     <a href="mes_demandes.php" class="text-xs text-slate-400 hover:text-[#004A99] transition-colors">
@@ -497,7 +541,6 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
                 submitBtn.disabled = code.length < 8;
             }
 
-            // Animation d'erreur sur les inputs si message d'erreur
             <?php if ($error_msg): ?>
             inputs.forEach(inp => {
                 inp.classList.add('error');
@@ -508,6 +551,7 @@ $initiales = (!empty($init_p) || !empty($init_n)) ? $init_p . $init_n : "?";
 
         <?php endif; ?>
     </div>
+
 
 </body>
 </html>

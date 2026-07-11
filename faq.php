@@ -74,6 +74,8 @@ $faq_categories = [
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+    </script>
     <style>
         body { font-family: 'Inter', sans-serif; background: #f0f4f8; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -82,6 +84,7 @@ $faq_categories = [
             50% { opacity: 0.7; transform: scale(1.1); }
         }
         .blink-badge { animation: blink-badge 1.2s ease-in-out infinite; }
+        .ifri-blue { color: #003d7a; }
         .faq-answer {
             max-height: 0;
             overflow: hidden;
@@ -147,12 +150,10 @@ $faq_categories = [
             class="w-64 md:w-80 pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#004A99]/20 focus:border-[#004A99] transition-all placeholder:text-slate-400" />
         </div>
         <div class="flex items-center gap-3">
-            <a href="notifications.php" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100 transition-all">
-                <span class="material-symbols-outlined text-gray-500" style="font-size:20px;">notifications</span>
+            <a href="notifications.php" class="relative inline-flex items-center justify-center w-8 h-8 rounded-full <?= $non_lues > 0 ? 'bg-amber-100' : 'hover:bg-gray-100'; ?> transition-all">
+                <span class="material-symbols-outlined <?= $non_lues > 0 ? 'text-amber-600' : 'text-gray-500'; ?>" style="font-size:18px;">notifications</span>
                 <?php if ($non_lues > 0): ?>
-                    <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg px-1 blink-badge"><?= min($non_lues, 99); ?></span>
-                <?php else: ?>
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-400 rounded-full"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"><?= min($non_lues, 99); ?></span>
                 <?php endif; ?>
             </a>
             <a href="faq.php" class="text-[#003d7a] hover:bg-blue-50 p-2 rounded-full transition-colors">
@@ -183,7 +184,7 @@ $faq_categories = [
         <div class="space-y-8">
             <?php foreach ($faq_categories as $categorie => $questions): ?>
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div class="px-7 py-4 border-b border-gray-100 bg-gray-50/50">
+                    <div class="px-7 py-4 border-b border-gray-100 bg-gray-50/50/50">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-[#003d7a]">
                                 <?= match($categorie) {
@@ -260,5 +261,8 @@ $faq_categories = [
 
 </script>
 
+
+<script src="assets/js/app.js"></script>
+<?php require_once 'contact_modal.php'; ?>
 </body>
 </html>
